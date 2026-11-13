@@ -1,0 +1,10 @@
+@extends('layouts.app')
+@section('title', 'My Comparisons')
+@section('content')
+<div class="page-shell app-layout">
+    <aside class="app-sidebar"><a class="side-link" href="{{ route('dashboard') }}"><span>⌂</span> Dashboard</a><a class="side-link" href="{{ route('compare') }}"><span>⌘</span> New Comparison</a><a class="side-link active" href="{{ route('comparisons.index') }}"><span>▤</span> Saved Diffs</a><a class="side-link" href="{{ route('pricing') }}"><span>◈</span> Subscription</a><a class="side-link" href="{{ route('lifetime.index') }}"><span>♛</span> Lifetime Request</a></aside>
+    <div class="app-content"><div class="dashboard-heading"><div><span class="eyebrow">Your private history</span><h1>Saved Comparisons</h1><p>Only you can view these saved versions.</p></div><a class="button" href="{{ route('compare') }}">+ New comparison</a></div>
+        <div class="content-card"><div class="table-wrap"><table><thead><tr><th>Title</th><th>Language</th><th>Saved</th><th>Settings</th><th></th></tr></thead><tbody>@forelse($comparisons as $comparison)<tr><td><b>{{ $comparison->title }}</b></td><td><span class="tag">{{ strtoupper($comparison->language) }}</span></td><td>{{ $comparison->created_at->format('M j, Y') }}</td><td>{{ ($comparison->settings['view'] ?? 'side') === 'unified' ? 'Unified' : 'Side by side' }}</td><td><div class="row-actions"><a class="table-action" href="{{ route('compare') }}?saved={{ $comparison->id }}">Open</a><form method="POST" action="{{ route('comparisons.delete', $comparison) }}" onsubmit="return confirm('Delete this saved comparison?')">@csrf @method('DELETE')<button class="link-button danger-link">Delete</button></form></div></td></tr>@empty<tr><td colspan="5"><div class="empty-state compact"><b>No saved comparisons yet</b><p>Choose “Save this comparison” in the compare tool to keep a private copy.</p><a href="{{ route('compare') }}" class="text-link">Compare code →</a></div></td></tr>@endforelse</tbody></table></div><div class="pagination-wrap">{{ $comparisons->links() }}</div></div>
+    </div>
+</div>
+@endsection

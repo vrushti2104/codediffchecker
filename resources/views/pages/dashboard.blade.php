@@ -1,0 +1,18 @@
+@extends('layouts.app')
+@section('title', 'Dashboard')
+@section('content')
+<div class="page-shell app-layout">
+    <aside class="app-sidebar"><a class="side-link active" href="{{ route('dashboard') }}"><span>⌂</span> Dashboard</a><a class="side-link" href="{{ route('compare') }}"><span>⌘</span> New Comparison</a><a class="side-link" href="{{ route('comparisons.index') }}"><span>▤</span> Saved Diffs</a><a class="side-link" href="{{ route('pricing') }}"><span>◈</span> Subscription</a><a class="side-link" href="{{ route('lifetime.index') }}"><span>♛</span> Lifetime Request</a><a class="side-link" href="#account"><span>⚙</span> Account</a></aside>
+    <div class="app-content">
+        <div class="dashboard-heading"><div><span class="eyebrow">Your workspace</span><h1>Dashboard</h1><p>Welcome back, {{ $user->name }}.</p></div><span class="plan-chip {{ $lifetime ? 'plan-lifetime' : '' }}"><span>{{ $lifetime ? '♛' : '◈' }}</span> {{ $lifetime ? 'Lifetime Pro' : 'Free Plan' }} <i>{{ $lifetime ? 'Active' : 'Active' }}</i></span></div>
+        @if($notifications->isNotEmpty())<div class="notification-box"><div><b>{{ $notifications->first()->data['title'] ?? 'Account update' }}</b><p>{{ $notifications->first()->data['message'] ?? '' }}</p></div><form action="{{ route('notifications.read') }}" method="POST">@csrf<button class="link-button">Mark read</button></form></div>@endif
+        @if(!$lifetime)<div class="usage-card"><div><span class="crown">♛</span><div><b>Get more room with Lifetime Pro</b><p>No monthly comparison limit. Save more private comparisons.</p></div></div><a class="button button-outline button-xs" href="{{ route('lifetime.index') }}">Request access</a></div>@endif
+        <div class="stats-grid"><article class="stat-card"><span class="stat-icon violet">⌘</span><div><b>{{ $monthCount }}</b><span>Comparisons this month</span></div></article><article class="stat-card"><span class="stat-icon blue">▤</span><div><b>{{ $savedCount }}</b><span>Saved diffs</span></div></article><article class="stat-card"><span class="stat-icon green">♛</span><div><b>{{ $lifetime ? '∞' : $monthlyLimit }}</b><span>{{ $lifetime ? 'Unlimited access' : 'Monthly free limit' }}</span></div></article></div>
+        <div class="content-card recent-card"><div class="card-heading"><div><h2>Recent Comparisons</h2><p>Private diffs you chose to save</p></div><a class="text-link" href="{{ route('comparisons.index') }}">View all <span>→</span></a></div>
+            @if($recent->isEmpty())<div class="empty-state"><span class="empty-icon">⌘</span><b>No saved comparisons yet</b><p>Run a comparison and choose “Save this comparison” to keep it here.</p><a href="{{ route('compare') }}" class="button button-outline button-xs">Start comparing</a></div>@else
+            <div class="table-wrap"><table><thead><tr><th>Title</th><th>Language</th><th>Date saved</th><th></th></tr></thead><tbody>@foreach($recent as $comparison)<tr><td><span class="table-title">{{ $comparison->title }}</span></td><td><span class="tag">{{ strtoupper($comparison->language) }}</span></td><td>{{ $comparison->created_at->format('M j, Y') }}</td><td><a href="{{ route('comparisons.index') }}" class="table-action">Open →</a></td></tr>@endforeach</tbody></table></div>@endif
+        </div>
+        <div class="account-card" id="account"><div><span class="avatar large">{{ strtoupper(substr($user->name, 0, 1)) }}</span><div><h2>{{ $user->name }}</h2><p>{{ $user->email }} · Email verified</p></div></div><a class="button button-outline button-xs" href="{{ route('password.request', ['email' => $user->email]) }}">Send password reset link</a></div>
+    </div>
+</div>
+@endsection

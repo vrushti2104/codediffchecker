@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('title', 'Create your account')
+@section('content')
+<div class="auth-page"><div class="auth-card"><span class="feature-icon purple">⌘</span><h1>Create your account</h1><p>Save selected comparisons and manage your access.</p><form method="POST" action="{{ route('register.store') }}" class="form-stack">@csrf<label>Name</label><input type="text" name="name" value="{{ old('name') }}" autocomplete="name" required autofocus><label>Email address</label><input type="email" name="email" value="{{ old('email') }}" autocomplete="email" required><label>Password</label><input type="password" name="password" autocomplete="new-password" minlength="10" required><label>Confirm password</label><input type="password" name="password_confirmation" autocomplete="new-password" required><button class="button full-button">Create account <span>→</span></button></form><div class="auth-links centered-links">Already have an account? <a href="{{ route('login') }}">Log in</a></div><small class="auth-footnote">We’ll send a verification link before enabling saved history or access requests.</small></div></div>
+@endsection

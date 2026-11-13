@@ -1,0 +1,6 @@
+@extends('admin.layout')
+@section('title', 'Access grants')
+@section('admin-content')
+<div class="dashboard-heading"><div><span class="eyebrow">Entitlements</span><h1>Lifetime Access Grants</h1><p>Current and historical grants, including who granted or revoked access.</p></div><a class="button button-outline button-xs" href="{{ route('admin.users') }}">Find a user to grant access</a></div>
+<div class="content-card"><div class="table-wrap"><table><thead><tr><th>User</th><th>Status</th><th>Granted by</th><th>Starts</th><th>Revoked by</th><th>Reason</th></tr></thead><tbody>@forelse($grants as $grant)<tr><td><b>{{ $grant->user->name }}</b><small>{{ $grant->user->email }}</small></td><td><span class="status-pill {{ $grant->status === 'active' ? 'status-approved' : 'status-rejected' }}">{{ ucfirst($grant->status) }}</span></td><td>{{ $grant->grantor?->name ?? 'System' }}</td><td>{{ $grant->starts_at->format('M j, Y') }}</td><td>{{ $grant->revoker?->name ?? '—' }}</td><td>{{ $grant->revoke_reason ?? '—' }}</td></tr>@empty<tr><td colspan="6" class="empty-cell">No lifetime grants recorded.</td></tr>@endforelse</tbody></table></div><div class="pagination-wrap">{{ $grants->links() }}</div></div>
+@endsection
